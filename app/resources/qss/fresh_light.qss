@@ -1,0 +1,52 @@
+/* Sertifikita – Light theme */
+QMainWindow { background: #F7F8FA; color: #0F172A; }
+QLabel { color: #0F172A; font-size: 12.5pt; }
+
+QGroupBox {
+  border: 1px solid #E5E7EB; border-radius: 12px; margin-top: 12px; padding: 12px;
+  background: #FFFFFF; color: #0F172A; font-weight: 600;
+}
+QGroupBox::title {
+  subcontrol-origin: margin; left: 10px; padding: 0 4px; color: #475569; font-weight: 600;
+}
+
+QLineEdit, QSpinBox, QComboBox {
+  background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 10px;
+  padding: 7px 10px; color: #0F172A; font-size: 12.5pt;
+}
+QComboBox QAbstractItemView {
+  background: #FFFFFF; color: #0F172A; border: 1px solid #E5E7EB; selection-background-color: #EEF2FF;
+}
+
+QTableWidget {
+  background: #FFFFFF; color: #0F172A; gridline-color: #E5E7EB;
+  border: 1px solid #E5E7EB; border-radius: 10px;
+}
+QHeaderView::section {
+  background: #F1F5F9; color: #475569; border: 0; padding: 8px 10px; font-weight: 600;
+}
+
+QScrollBar:vertical, QScrollBar:horizontal { background: transparent; margin: 4px; border: none; }
+QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
+  background: #CBD5E1; border-radius: 6px; min-height: 30px; min-width: 30px;
+}
+
+QPushButton {
+  background: #FFFFFF; border: 1px solid #E5E7EB; color: #0F172A;
+  border-radius: 10px; padding: 8px 12px; font-weight: 600;
+}
+QPushButton:hover { border-color: #CBD5E1; background: #EEF2FF; }
+QPushButton#primary { background: #4F46E5; border: 0; color: white; }
+QPushButton#danger { background: #EF4444; border: 0; color: white; }
+
+QGraphicsView { background: #F3F4F6; border: 1px solid #E5E7EB; border-radius: 14px; }
+
+QToolBar { background: transparent; border: 0; spacing: 8px; }
+QToolButton {
+  background: #FFFFFF; border: 1px solid #E5E7EB; padding: 7px 10px; border-radius: 10px; color: #0F172A;
+}
+QToolButton:hover { border-color: #CBD5E1; background: #EEF2FF; }
+
+QSlider::groove:horizontal { height: 6px; background: #E5E7EB; border-radius: 3px; }
+QSlider::handle:horizontal { width: 18px; height: 18px; margin: -7px 0; border-radius: 9px; background: #4F46E5; }
+

@@ -1,0 +1,48 @@
+{
+  "name": "sertifikita-launcher",
+  "version": "1.0.0",
+  "description": "Electron launcher untuk bundel Sertifikita (PyInstaller) + packaging DMG.",
+  "private": true,
+  "main": "main.js",
+  "author": "Sertifikita",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --mac dmg",
+    "build:mac": "electron-builder --mac dmg"
+  },
+  "build": {
+    "appId": "com.sertifikita.app",
+    "productName": "Sertifikita",
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "package.json"
+    ],
+    "extraResources": [
+      { "from": "../dist-python/Sertifikita.app", "to": "Sertifikita.app" }
+    ],
+    "mac": {
+      "target": ["dmg"],
+      "category": "public.app-category.productivity",
+      "extendInfo": { "LSUIElement": "1" }
+    },
+    "dmg": {
+      "icon": "build/icon.icns",
+      "artifactName": "Sertifikita-${version}-${arch}.dmg",
+      "window": { "width": 520, "height": 300 },
+      "iconSize": 120,
+      "contents": [
+        { "x": 160, "y": 180, "type": "file" },
+        { "x": 360, "y": 180, "type": "link", "path": "/Applications" }
+      ]
+    }
+  },
+  "devDependencies": {
+    "electron": "30.5.1",
+    "electron-builder": "24.13.3"
+  }
+}

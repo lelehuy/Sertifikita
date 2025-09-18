@@ -1,0 +1,28 @@
+# macOS
+.DS_Store
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# PyInstaller work/dist
+build-py/
+dist-python/
+app/dist/
+app/build/
+
+# Electron/Node
+electron/node_modules/
+electron/dist/
+electron/out/
+
+# Logs
+*.log
+*.out.log
+*.err.log
+
+# VSCode / IDE
+.vscode/
+.idea/
+
