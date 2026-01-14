@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (
     QGraphicsTextItem, QGraphicsRectItem, QSpinBox, QComboBox, QLineEdit,
     QMessageBox, QColorDialog, QDialog, QTableWidget, QTableWidgetItem,
     QHeaderView, QScrollArea, QCheckBox, QStyle, QToolBar, QGroupBox, QSlider,
-    QFormLayout, QFontComboBox, QFrame, QSizePolicy, QSplitter
+    QFormLayout, QFontComboBox, QFrame, QSizePolicy, QSplitter, QGraphicsDropShadowEffect
 )
 
 from renderer import draw_certificate, render_to_image
@@ -122,7 +122,14 @@ def apply_fresh_theme(app: QApplication, mode="dark"):
         pal.setColor(QPalette.Highlight,QColor("#6366F1"))
         pal.setColor(QPalette.HighlightedText,QColor("#FFFFFF"))
     app.setPalette(pal)
-    app.setStyleSheet(build_fresh_stylesheet(mode))
+
+    # Try loading from file first
+    qss_path = os.path.join(os.path.dirname(__file__), "resources", "qss", f"fresh_{mode}.qss")
+    if os.path.exists(qss_path):
+        with open(qss_path, "r", encoding="utf-8") as f:
+            app.setStyleSheet(f.read())
+    else:
+        app.setStyleSheet(build_fresh_stylesheet(mode))
 
 
 # --------------- Color chip ---------------
@@ -182,6 +189,14 @@ class CanvasView(QGraphicsView):
         if e.key()==Qt.Key_Down: self.nudge_cb(0,+step); return
         super().keyPressEvent(e)
 
+    def wheelEvent(self, e):
+        if e.modifiers() & Qt.ControlModifier:
+            f = 1.15 if e.angleDelta().y() > 0 else (1/1.15)
+            self.window()._change_zoom(f)
+            e.accept()
+        else:
+            super().wheelEvent(e)
+
 
 # --------------- EnterAdvancingTable ---------------
 class EnterAdvancingTable(QTableWidget):
@@ -214,6 +229,14 @@ class DraggableText(QGraphicsTextItem):
         super().mouseReleaseEvent(ev)
         p=self.pos(); self.field.x=p.x()/self.sf; self.field.y=p.y()/self.sf
         if self.moved_cb: self.moved_cb(self)
+
+    def hoverEnterEvent(self, ev):
+        self.setOpacity(0.8)
+        super().hoverEnterEvent(ev)
+
+    def hoverLeaveEvent(self, ev):
+        self.setOpacity(1.0)
+        super().hoverLeaveEvent(ev)
 
 
 # --------------- ManageDataDialog ---------------
@@ -299,6 +322,7 @@ class Main(QMainWindow):
         self.fields: List[TextField]=[]; self.dataset: List[Dict[str,str]]=[]
         self.overlay_box=None; self.bg_item=None
 
+        self.setAcceptDrops(True)
         self._build_menu()
 
         self.scene=QGraphicsScene(self)
@@ -334,12 +358,18 @@ class Main(QMainWindow):
         form_field.setLabelAlignment(Qt.AlignRight|Qt.AlignVCenter)
         form_field.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)
         form_field.setHorizontalSpacing(12); form_field.setVerticalSpacing(10)
+        
+        row_size_align = QHBoxLayout()
+        row_size_align.addWidget(self.fld_size, 1)
+        row_size_align.addWidget(QLabel("Align"))
+        row_size_align.addWidget(self.fld_align, 1)
+        w_size_align = QWidget(); w_size_align.setLayout(row_size_align)
+
         form_field.addRow("Field Name", self.fld_name)
-        form_field.addRow("Font Size", self.fld_size)
+        form_field.addRow("Font Size", w_size_align)
         form_field.addRow("Color (#RRGGBB)", w_color)
-        form_field.addRow("Align", self.fld_align)
         form_field.addRow("Font Family", self.font_combo)
-        form_field.addRow("Box Width (drag di canvas)", self.fld_boxw)
+        form_field.addRow("Box Width", self.fld_boxw)
 
         # ---- Placement ----
         grp_place=QGroupBox("Placement")
@@ -414,6 +444,12 @@ class Main(QMainWindow):
 
         container=QWidget(); lay=QVBoxLayout(container); lay.setContentsMargins(0,0,0,0); lay.addWidget(splitter); self.setCentralWidget(container)
 
+        # Shortcuts
+        self.shortcut_open = QAction(self); self.shortcut_open.setShortcut("Ctrl+O"); self.shortcut_open.triggered.connect(self.load_template); self.addAction(self.shortcut_open)
+        self.shortcut_save = QAction(self); self.shortcut_save.setShortcut("Ctrl+S"); self.shortcut_save.triggered.connect(self.save_fields); self.addAction(self.shortcut_save)
+        self.shortcut_gen = QAction(self); self.shortcut_gen.setShortcut("Ctrl+G"); self.shortcut_gen.triggered.connect(self.generate_all); self.addAction(self.shortcut_gen)
+        self.shortcut_del = QAction(self); self.shortcut_del.setShortcuts(["Delete", "Backspace"]); self.shortcut_del.triggered.connect(self.delete_selected); self.addAction(self.shortcut_del)
+
         # Signals
         self.btn_loadtpl.clicked.connect(self.load_template)
         self.btn_add_text.clicked.connect(self.add_text)
@@ -435,8 +471,53 @@ class Main(QMainWindow):
         self.filename_field.currentTextChanged.connect(lambda _ : self._update_filename_preview())
         self.format_combo.currentTextChanged.connect(lambda _ : self._update_filename_preview())
 
-        self.statusBar().showMessage("Tip: Enter = baris baru; Shift+Enter = baris atas. Untuk align center/right terlihat di kanvas, drag tepi overlay biru untuk atur lebar box.")
+        self.statusBar().showMessage("Tip: Enter = baris baru; Shift+Enter = baris atas. Drag file template atau CSV langsung ke sini!")
         self._refresh_filename_choices(); self._update_filename_preview()
+
+        # Empty state label
+        self.empty_overlay = QLabel("No Template Loaded\nClick 'Load Template' or drag image here", self.view)
+        self.empty_overlay.setAlignment(Qt.AlignCenter)
+        self.empty_overlay.setStyleSheet("color: #64748B; font-size: 16pt; font-weight: 500; background: transparent;")
+        self.empty_overlay.setAttribute(Qt.WA_TransparentForMouseEvents)
+        self._update_empty_overlay()
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._update_empty_overlay()
+
+    def _update_empty_overlay(self):
+        if hasattr(self, 'empty_overlay'):
+            self.empty_overlay.setVisible(not bool(self.template_path))
+            self.empty_overlay.setGeometry(self.view.viewport().rect())
+
+    # ---------- drag/drop ----------
+    def dragEnterEvent(self, e):
+        if e.mimeData().hasUrls():
+            urls = e.mimeData().urls()
+            if any(u.toLocalFile().lower().endswith(('.png', '.jpg', '.jpeg', '.webp', '.csv')) for u in urls):
+                e.acceptProposedAction()
+
+    def dropEvent(self, e):
+        for u in e.mimeData().urls():
+            path = u.toLocalFile()
+            if path.lower().endswith(('.png', '.jpg', '.jpeg', '.webp')):
+                self.set_template(path)
+                break # only one template
+            elif path.lower().endswith('.csv'):
+                self._import_csv_direct(path)
+                break
+
+    def _import_csv_direct(self, path):
+        import csv
+        try:
+            with open(path, "r", encoding="utf-8-sig") as f:
+                rdr = csv.DictReader(f)
+                names = self._field_names() or ["Text-1"]
+                self.dataset = [{k: rec.get(k, "") for k in names} for rec in rdr] or [{k: "" for k in names}]
+                self._update_filename_preview()
+                QMessageBox.information(self, "CSV Imported", f"Imported {len(self.dataset)} rows from {os.path.basename(path)}")
+        except Exception as e:
+            QMessageBox.critical(self, "CSV error", str(e))
 
     # ---------- menu ----------
     def _build_menu(self):
@@ -466,13 +547,25 @@ class Main(QMainWindow):
         self.img_w,self.img_h=pm.width(),pm.height(); self.sf=1.0
         self.scene.clear(); self._clear_overlay()
         paper=QGraphicsRectItem(0,0,self.img_w,self.img_h); paper.setBrush(QBrush(Qt.white)); paper.setPen(QPen(QColor("#D1D5DB"),1)); self.scene.addItem(paper)
+        
+        # Shadow effect
+        shadow = QGraphicsDropShadowEffect()
+        shadow.setBlurRadius(20); shadow.setXOffset(0); shadow.setYOffset(4)
+        shadow.setColor(QColor(0,0,0,60))
+        
         self.bg_item=QGraphicsPixmapItem(pm)
         try: self.bg_item.setTransformationMode(Qt.SmoothTransformation)
         except Exception: pass
         self.bg_item.setZValue(1); self.scene.addItem(self.bg_item)
+        
+        # Apply shadow to both paper and pixmap via a container if needed, 
+        # but GraphicsItem shadow is tricky. Apply to the pixmap item for now.
+        self.bg_item.setGraphicsEffect(shadow)
+
         for f in self.fields:
             it=DraggableText(f,self.sf,self._on_item_moved); it.setZValue(2); self.scene.addItem(it); self._apply_canvas_alignment(it)
-        self.scene.setSceneRect(0,0,self.img_w,self.img_h); self._fit_to_view()
+        self.scene.setSceneRect(-50,-50,self.img_w+100,self.img_h+100); self._fit_to_view()
+        self._update_empty_overlay()
 
     # ---------- overlay ----------
     def _clear_overlay(self):
