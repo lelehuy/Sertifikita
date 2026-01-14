@@ -1,5 +1,28 @@
 # Sertifikita
 
+Aplikasi desktop (PySide6 + Pillow/ReportLab) untuk desain & batch-generate sertifikat.
+Dikemas ke DMG via Electron (launcher silent).
+
+## Fitur
+- Drag & drop template gambar (PNG/JPG)
+- Tambah dynamic text field, drag/resize langsung di canvas
+- Align kiri/center/kanan yang real-time di canvas & output
+- Color picker, font system scanning
+- Manage data (inline table), import/export CSV
+- Batch generate (PDF/PNG) + pola nama file custom
+- Zoom preview & zoom canvas
+- Save/Load project (planned)
+
+## Jalankan lokal (dev)
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r app/requirements.txt
+python app/main.py
+
+
+# Sertifikita
+
 A lightweight desktop app to **design and batch-generate certificates**.  
 Built with **PySide6 (Qt)** + **Pillow/ReportLab** for rendering, and packaged to a macOS **DMG** via a tiny **Electron launcher**.
 
