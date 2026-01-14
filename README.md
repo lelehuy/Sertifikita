@@ -4,55 +4,48 @@
 ![Platform: macOS](https://img.shields.io/badge/platform-macOS-lightgrey)
 ![Downloads](https://img.shields.io/github/downloads/lelehuy/Sertifikita/total)
 
-**Sertifikita** adalah aplikasi desktop modern dan ringan untuk mendesain serta membuat sertifikat secara massal (*batch*) dengan cepat dan mudah.
+**Sertifikita** is a modern and lightweight desktop application for designing and batch-generating certificates with ease and speed.
 
 ---
 
-## ✨ Fitur Utama
+## ✨ Key Features
 
-- 🖼️ **Template-based**: Gunakan gambar PNG/JPG/WEBP apa pun sebagai latar belakang sertifikat Anda.
-- 🔤 **Dynamic Text Fields**: Tambahkan kolom teks dinamis yang bisa digeser (*drag*), diubah ukurannya (*resize*), dan diatur perataannya (*left/center/right*).
-- 🧭 **Live Canvas**: Lihat perubahan secara langsung, lengkap dengan fitur *Snap 5px* untuk presisi dan dukungan *Zoom* (CTRL + Scroll).
-- 📁 **Drag & Drop**: Tarik file gambar template atau file CSV langsung ke aplikasi untuk impor instan.
-- 🗂️ **Manage Data**: Kelola data penerima langsung di tabel aplikasi atau impor/ekspor via CSV.
-- 🧩 **Custom Filename**: Gunakan pola nama file dinamis seperti `{row}-{Nama}-{Kursus}`.
-- 👀 **Preview Modern**: Pratinjau hasil desain dengan satu klik sebelum melakukan ekspor masal.
-- 🖨️ **Batch Generate**: Ekspor semua sertifikat sekaligus ke format **PNG** atau **PDF** berkualitas tinggi.
-
----
-
-## 🖥️ Cara Instalasi (macOS)
-
-1. Unduh file **`Sertifikita-<versi>-arm64.dmg`** dari menu [Releases](https://github.com/lelehuy/Sertifikita/releases).
-2. Buka file DMG dan tarik ikon **Sertifikita** ke folder **Applications**.
-3. **Penting**: Saat pertama kali menjalankan aplikasi, klik kanan pada ikon aplikasi dan pilih **Open** untuk melewati verifikasi keamanan macOS (Gatekeeper).
+- 🖼️ **Template-based**: Use any PNG/JPG/WEBP image as your certificate background.
+- 🔤 **Dynamic Text Fields**: Add dynamic text fields that can be dragged, resized, and aligned (left/center/right).
+- 🧭 **Live Canvas**: Real-time preview with *Snap 5px* for precision, support for *Zoom* (CTRL + Scroll), and subtle shadow effects.
+- 📁 **Drag & Drop**: Drag template images or CSV files directly into the application for instant import.
+- 🗂️ **Manage Data**: Manage recipient data directly in the built-in table or import/export via CSV.
+- 🧩 **Custom Filename**: Use dynamic filename patterns like `{row}-{Name}-{Course}`.
+- 👀 **Modern Preview**: Quick preview of one certificate before committing to a full batch generation.
+- 🖨️ **Batch Generate**: Export all certificates simultaneously to high-quality **PNG** or **PDF** formats.
 
 ---
 
-## ⌨️ Shortcut Keyboard
+## 🖥️ Installation (macOS)
 
-- `Ctrl + O`: Buka Template Gambar
-- `Ctrl + S`: Simpan Konfigurasi Field (JSON)
-- `Ctrl + G`: Mulai Generate Sertifikat
-- `Delete / Backspace`: Hapus elemen teks yang dipilih
-- `Ctrl + Scroll`: Zoom In / Out pada kanvas
+1. Download the latest **`Sertifikita-<version>-arm64.dmg`** from the [Releases](https://github.com/lelehuy/Sertifikita/releases) tab.
+2. Open the DMG file and drag the **Sertifikita** icon into your **Applications** folder.
+3. **Important**: On the first launch, right-click the application icon and select **Open** to bypass macOS Gatekeeper verification.
 
 ---
 
-## 📄 Format CSV
+## ⌨️ Keyboard Shortcuts
 
-- **Impor**: Baris pertama harus berupa header kolom. Kolom harus sesuai dengan nama label yang Anda buat di kanvas (misal: `Nama`, `Kursus`).
-- **Ekspor**: Anda bisa mengekspor data tabel yang ada kembali ke format CSV.
+- `Ctrl + O`: Open Template Image
+- `Ctrl + S`: Save Fields Configuration (JSON)
+- `Ctrl + G`: Start Certificate Generation
+- `Delete / Backspace`: Remove selected text element
+- `Ctrl + Scroll`: Zoom In / Out on the canvas
 
 ---
 
-## 🧑‍💻 Untuk Pengembang (Developers)
+## 🧑‍💻 For Developers
 
-Jika Anda ingin berkontribusi atau menjalankan aplikasi dari kode sumber, silakan baca panduan di:
+If you want to contribute or run the application from source code, please read our guide:
 👉 **[development.md](./development.md)**
 
 ---
 
-## 📜 Lisensi
+## 📜 License
 
-Proyek ini dilisensikan di bawah **GPL v3 License**.
+This project is licensed under the **GPL v3 License**. See the [LICENSE](./LICENSE) file for details.
