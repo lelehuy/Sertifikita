@@ -6,13 +6,15 @@
 
 **Sertifikita** is a modern and lightweight desktop application for designing and batch-generating certificates with ease and speed.
 
+![Sertifikita Screenshot](./screenshot.png)
+
 ---
 
 ## ✨ Key Features
 
 - 🖼️ **Template-based**: Use any PNG/JPG/WEBP image as your certificate background.
 - 🔤 **Dynamic Text Fields**: Add dynamic text fields that can be dragged, resized, and aligned (left/center/right).
-- 🧭 **Live Canvas**: Real-time preview with *Snap 5px* for precision, support for *Zoom* (CTRL + Scroll), and subtle shadow effects.
+- 🧭 **Live Canvas**: Real-time preview with _Snap 5px_ for precision, support for _Zoom_ (CTRL + Scroll), and subtle shadow effects.
 - 📁 **Drag & Drop**: Drag template images or CSV files directly into the application for instant import.
 - 🗂️ **Manage Data**: Manage recipient data directly in the built-in table or import/export via CSV.
 - 🧩 **Custom Filename**: Use dynamic filename patterns like `{row}-{Name}-{Course}`.
